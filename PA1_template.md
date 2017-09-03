@@ -1,22 +1,5 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
-author:
-- name: Steven V. Eannuzzi
----
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
-library(dplyr)
-library(knitr)
-library(plotly)
-library(scales)
-library(Hmisc)
-library(lattice)
-options(scipen=999)
-```
+# Reproducible Research: Peer Assessment 1
+
 
 
 ## Loading and preprocessing the data
@@ -28,7 +11,8 @@ The following code demonstrates:
 1. Unzipping into data directory,
 1. Reading CSV into a table with NA processing and
 1. Converting date strings to POSIX date objects
-```{r}
+
+```r
 #Clear workspace as needed
 rm(list = ls())
 
@@ -61,13 +45,13 @@ myData <- read.csv(
 
 #Convert date columns
 myData[, 2] <- as.POSIXct(myData[, 2], format="%Y-%m-%d")
-
 ```
 
 
 ## What is the average daily activity pattern?
 The following depicts how often a number of steps were taken per day.
-```{r}
+
+```r
 d <- tapply(myData$steps, myData$date, sum, na.rm = TRUE)
 hist(d, breaks = 10, col = 'dark green',
      xlab = "Total steps", 
@@ -75,12 +59,15 @@ hist(d, breaks = 10, col = 'dark green',
      main = "Steps per Day")
 ```
 
-The mean and median of total number of steps taken per day are ```r round(mean(d),2)``` and ```r round(median(d),2)```.
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+The mean and median of total number of steps taken per day are ``9354.23`` and ``10395``.
 
 
 ## Average steps taken at each minute interval
 What minute interval is the wearer most active?  The following visualization shows clear patterns of inactivity (0 to 500 interval) with a peek highlighted on the graph.
-```{r}
+
+```r
 d <- na.omit(myData)
 ts <- setNames(aggregate(d$steps,list(d$interval),mean),c('interval','steps'))
 
@@ -89,13 +76,16 @@ lines(lowess(ts$interval,ts$steps), col="blue")
 text(ts[which.max(ts$steps),]$interval,ts[which.max(ts$steps),]$steps,round(ts[which.max(ts$steps),]$steps,0))
 ```
 
-Interval with maximum steps is ```r round(ts[which.max(ts$steps),],0)```
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+Interval with maximum steps is ``835, 206``
 
 ## Imputing missing values
 Imputing is to assign a value to something by inference from the value of the products or processes to which it contributes.  The purpose of imputing is to see if
 missing data influences the overall observation.  Derived values are calculated by the average steps.  The mean/median comparison to imputed to original data reflects a small influence.
 
-```{r}
+
+```r
 d <- myData
 # Add missing values 
 d$imputed_steps <- with(d, impute(steps, mean))
@@ -107,9 +97,11 @@ hist(h, breaks = 10, col = 'dark green',
      main = "Steps per Day (imputed)")
 ```
 
-We are missing ```r sapply(myData, function(x) sum(is.na(x)))['steps']``` rows from the dataset.
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
-The mean and median are ```r round(mean(h),2)``` and ```r round(median(h),2)```
+We are missing ``2304`` rows from the dataset.
+
+The mean and median are ``10766.19`` and ``10766.19``
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -118,7 +110,8 @@ Two observations can be made from the weekend to weekday analysis.
 1. Subject is more 'inactive' in the early intervals (sleeping late?)
 1. Subject is overall more active during the weekend implying a sedentary weekly active (desk job?)
 
-```{r}
+
+```r
 d <- myData
 # Add missing values based upon average 
 d$imputed_steps <- with(d, impute(steps, mean))
@@ -127,5 +120,7 @@ d$wDay <- c('weekend', 'weekday')[(weekdays(d$date) %in% weekdays1)+1L]
 ts <- setNames(aggregate(d$imputed_steps,list(d$interval,d$wDay),mean),c('interval','weekday','steps'))
 xyplot(steps~interval|weekday,ts,type='l',layout=(c(1,2)),xlab='Interval',ylab='Number of steps')
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ### End of Report
