@@ -1,4 +1,8 @@
 # Reproducible Research: Peer Assessment 1
+September 3, 2017  
+
+
+
 
 
 
@@ -59,7 +63,7 @@ hist(d, breaks = 10, col = 'dark green',
      main = "Steps per Day")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](Figs/unnamed-chunk-2-1.png)<!-- -->
 
 The mean and median of total number of steps taken per day are ``9354.23`` and ``10395``.
 
@@ -76,7 +80,7 @@ lines(lowess(ts$interval,ts$steps), col="blue")
 text(ts[which.max(ts$steps),]$interval,ts[which.max(ts$steps),]$steps,round(ts[which.max(ts$steps),]$steps,0))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](Figs/unnamed-chunk-3-1.png)<!-- -->
 
 Interval with maximum steps is ``835, 206``
 
@@ -97,7 +101,7 @@ hist(h, breaks = 10, col = 'dark green',
      main = "Steps per Day (imputed)")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](Figs/unnamed-chunk-4-1.png)<!-- -->
 
 We are missing ``2304`` rows from the dataset.
 
@@ -121,6 +125,6 @@ ts <- setNames(aggregate(d$imputed_steps,list(d$interval,d$wDay),mean),c('interv
 xyplot(steps~interval|weekday,ts,type='l',layout=(c(1,2)),xlab='Interval',ylab='Number of steps')
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](Figs/unnamed-chunk-5-1.png)<!-- -->
 
 ### End of Report
